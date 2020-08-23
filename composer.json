@@ -9,11 +9,15 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "chrome-php/chrome": "^0.8.1",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.24",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "laravel/ui": "^2.1",
+        "spatie/crawler": "^4.7"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
