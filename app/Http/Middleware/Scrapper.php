@@ -23,7 +23,7 @@ class Scrapper
         $articles = $crawler->filter('.streamItem');
 
 
-        dump("Scrapping Data");
+        \Log::info("Scrapping Data");
 
         $articles->eq($request['index'])->each(function ($post, $index){
             $scrappedArticle = [
@@ -31,21 +31,21 @@ class Scrapper
                 'creator_img' => $post->filter('img')->eq(0)->attr('src'),
                 'title' => $post->filter('.graf--title')->text(),
                 'details' => $post->filter('.postMetaInline > .js-postMetaInlineSupplemental')->text() . ", " . $post->filter('.postMetaInline > .js-postMetaInlineSupplemental > .readingTime')->attr('title'),
-                'short_content' => $post->filter('.graf--trailing')->text(),
-                'full_article' => $post->filter('.postArticle-readMore > a')->attr('href'),
-                'claps' => $post->filter('.js-multirecommendCountButton')->text()
+                'short_description' => $post->filter('.graf--trailing')->text(),
+                'full_article_link' => $post->filter('.postArticle-readMore > a')->attr('href'),
+                'claps' => $post->filter('.js-multirecommendCountButton')->text(),
+                'responses_count' => $post->filter('.js-bookmarkButton')->siblings()->text(),
             ];
             $scrappedArticle = $this->getSingleArticleData($scrappedArticle, $post->filter('.postArticle-readMore > a')->attr('href'));
 
             $this->data = $scrappedArticle;
 
-            dump(($index+1) . " article scrapped Successfully");
+            \Log::info(($index+1) . " article scrapped Successfully");
         });
 
 //        $request = $this->data;
 
         $request->replace($this->data);
-        \Log::info($request->all());
 
         return $next($request);
     }
@@ -107,8 +107,8 @@ class Scrapper
         $crawler->filterXPath('html/body/div/div/div[4]/div[2]/div[3]/div')->each(function ($data, $index) {
 
             array_push($this->responses, [
-                'responser'     =>  $data->filter('img')->attr('alt'),
-                'responser_img' =>  $data->filter('img')->attr('src'),
+                'responded_by'     =>  $data->filter('img')->attr('alt'),
+                'responded_image' =>  $data->filter('img')->attr('src'),
                 'on_time'       =>  $data->filterXPath('div/div[1]/div/div[1]')->filter('a')->eq(1)->text(),
                 'response'      =>  $data->children()->children()->eq(1)->text(),
                 'claps' => $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->count() > 0 ? $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->text() : 0,
