@@ -18,7 +18,9 @@ class CreateArticlesTable extends Migration
             $table->string('creator');
             $table->string('creator_img');
             $table->string('title');
+            $table->string('subtitle');
             $table->string('details');
+            $table->string('article_image');
             $table->string('short_description');
             $table->string('full_article_link');
             $table->string('claps');

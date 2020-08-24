@@ -12,19 +12,23 @@ class ArticleController extends Controller
     /**
      * Send a listing of the articles.
      *
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request through Scrapper Middleware
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $this->store($request);
+        $article = $this->store($request);
         return response()->json([
-            'creator'=>$request['creator'],
-            'creator_img'=>$request['creator_img'],
-            'title'=>$request['title'],
-            'details'=>$request['details'],
-            'short_description'=>$request['short_description'],
-            'claps'=>$request['claps'],
-            'responses_count'=>$request['responses_count'],
+            'id'                =>  $article->id,
+            'creator'           =>  $request['creator'],
+            'creator_img'       =>  $request['creator_img'],
+            'title'             =>  $request['title'],
+            'subtitle'          =>  $request['subtitle'],
+            'details'           =>  $request['details'],
+            'short_description' =>  $request['short_description'],
+            'claps'             =>  $request['claps'],
+            'responses_count'   =>  $request['responses_count'],
+            'article_image'     =>  $request['article_image'],
         ]);
     }
 
@@ -32,34 +36,40 @@ class ArticleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Article
      */
     public function store(Request $request)
     {
-        $article = Article::create([
-            'creator'=>$request['creator'],
-            'creator_img'=>$request['creator_img'],
-            'title'=>$request['title'],
-            'details'=>$request['details'],
-            'short_description'=>$request['short_description'],
-            'claps'=>$request['claps'],
-            'full_article_link'=>$request['full_article_link'],
-            'body' => $request['body'],
+        $article = Article::firstOrCreate([
+                'title'             =>  $request['title'],
+            ],
+            [
+                'subtitle'          =>  $request['subtitle'],
+                'creator'           =>  $request['creator'],
+                'creator_img'       =>  $request['creator_img'],
+                'details'           =>  $request['details'],
+                'short_description' =>  $request['short_description'],
+                'claps'             =>  $request['claps'],
+                'full_article_link' =>  $request['full_article_link'],
+                'body'              =>  $request['body'],
+                'article_image'     =>  $request['article_image'],
         ]);
 
         $article_tag = [];
         foreach ($request->tags as $index => $tag){
-            $article_tag[$index] = Tag::create(['name' => $tag])->id;
+            $article_tag[$index] = Tag::firstOrCreate(['name' => $tag])->id;
         }
 
         $article_response = [];
         foreach ($request->responses as $index => $response){
-            $article_response[$index] = Response::create($response)->id;
+            $article_response[$index] = Response::firstOrCreate($response)->id;
         }
 
 
-        $article->tags()->attach($article_tag);
-        $article->responses()->attach($article_response);
+        $article->tags()->sync($article_tag);
+        $article->responses()->sync($article_response);
+
+        return $article;
     }
 
     /**

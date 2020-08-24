@@ -27,14 +27,16 @@ class Scrapper
 
         $articles->eq($request['index'])->each(function ($post, $index){
             $scrappedArticle = [
-                'creator' => $post->filter('.postMetaInline > .ds-link')->text(),
-                'creator_img' => $post->filter('img')->eq(0)->attr('src'),
-                'title' => $post->filter('.graf--title')->text(),
-                'details' => $post->filter('.postMetaInline > .js-postMetaInlineSupplemental')->text() . ", " . $post->filter('.postMetaInline > .js-postMetaInlineSupplemental > .readingTime')->attr('title'),
-                'short_description' => $post->filter('.graf--trailing')->text(),
-                'full_article_link' => $post->filter('.postArticle-readMore > a')->attr('href'),
-                'claps' => $post->filter('.js-multirecommendCountButton')->text(),
-                'responses_count' => $post->filter('.js-bookmarkButton')->siblings()->text(),
+                'creator'           =>  $post->filter('.postMetaInline > .ds-link')->text(),
+                'creator_img'       =>  $post->filter('img')->eq(0)->attr('src'),
+                'title'             =>  $post->filter('.graf--title')->text(),
+                'subtitle'          =>  $post->filter('.graf--subtitle')->count() ? $post->filter('.graf--subtitle')->text(): '',
+                'details'           =>  $post->filter('.postMetaInline > .js-postMetaInlineSupplemental')->text() . ", " . $post->filter('.postMetaInline > .js-postMetaInlineSupplemental > .readingTime')->attr('title'),
+                'short_description' =>  $post->filter('.graf--p')->count() ? $post->filter('.graf--p')->text(): '',
+                'full_article_link' =>  $post->filter('.postArticle-readMore > a')->attr('href'),
+                'claps'             =>  $post->filter('.js-multirecommendCountButton')->count() > 0 ? $post->filter('.js-multirecommendCountButton')->text() : 0,
+                'responses_count'   =>  $post->filter('.js-bookmarkButton')->siblings()->count() > 0 ? $post->filter('.js-bookmarkButton')->siblings()->text():'0 Responses',
+                'article_image'     =>  $post->filter('.graf-image')->count() > 0 ? $post->filter('.graf-image')->attr('src'):'',
             ];
             $scrappedArticle = $this->getSingleArticleData($scrappedArticle, $post->filter('.postArticle-readMore > a')->attr('href'));
 
@@ -107,11 +109,11 @@ class Scrapper
         $crawler->filterXPath('html/body/div/div/div[4]/div[2]/div[3]/div')->each(function ($data, $index) {
 
             array_push($this->responses, [
-                'responded_by'     =>  $data->filter('img')->attr('alt'),
-                'responded_image' =>  $data->filter('img')->attr('src'),
-                'on_time'       =>  $data->filterXPath('div/div[1]/div/div[1]')->filter('a')->eq(1)->text(),
-                'response'      =>  $data->children()->children()->eq(1)->text(),
-                'claps' => $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->count() > 0 ? $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->text() : 0,
+                'responded_by'      =>  $data->filter('img')->attr('alt'),
+                'responded_image'   =>  $data->filter('img')->attr('src'),
+                'on_time'           =>  $data->filterXPath('div/div[1]/div/div[1]')->filter('a')->eq(1)->text(),
+                'response'          =>  $data->children()->children()->eq(1)->text(),
+                'claps'             => $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->count() > 0 ? $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->text() : 0,
             ]);
 
         });
@@ -138,8 +140,6 @@ class Scrapper
     public function getTags($crawler)
     {
         $this->tags = [];
-//        /html/body/div[1]/div/div[7]/div/div[1]/div/div[3]/ul/li[1]
-//        /html/body/div/div/div[7]/div/div[1]/div/div[4]/ul/li[2]
         $crawler->filterXPath('html/body/div/div/div[7]/div/div[1]/div/div')->filter('li')->each(function ($data, $index) {
             $this->tags[$index] = $data->filter('a')->html();
         });
