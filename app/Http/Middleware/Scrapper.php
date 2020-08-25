@@ -9,40 +9,50 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class Scrapper
 {
+
+//    $related_tags = [];
+
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next){
+    public function handle($request, Closure $next)
+    {
 
-        $crawler = $this->getCrawler('https://medium.com/tag/'.$request['tag'], true, $request['index']);
+        $crawler = $this->getCrawler('https://medium.com/tag/' . $request['tag'], true, $request['index']);
 
+        $this->related_tags = [];
+
+        $crawler->filter('.tags--postTags > li')->each(function ($related_tags) {
+            array_push($this->related_tags, $related_tags->text());
+        });
         $articles = $crawler->filter('.streamItem');
 
 
         \Log::info("Scrapping Data");
 
-        $articles->eq($request['index'])->each(function ($post, $index){
+        $articles->eq($request['index'])->each(function ($post, $index) {
             $scrappedArticle = [
-                'creator'           =>  $post->filter('.postMetaInline > .ds-link')->text(),
-                'creator_img'       =>  $post->filter('img')->eq(0)->attr('src'),
-                'title'             =>  $post->filter('.graf--title')->text(),
-                'subtitle'          =>  $post->filter('.graf--subtitle')->count() ? $post->filter('.graf--subtitle')->text(): '',
-                'details'           =>  $post->filter('.postMetaInline > .js-postMetaInlineSupplemental')->text() . ", " . $post->filter('.postMetaInline > .js-postMetaInlineSupplemental > .readingTime')->attr('title'),
-                'short_description' =>  $post->filter('.graf--p')->count() ? $post->filter('.graf--p')->text(): '',
-                'full_article_link' =>  $post->filter('.postArticle-readMore > a')->attr('href'),
-                'claps'             =>  $post->filter('.js-multirecommendCountButton')->count() > 0 ? $post->filter('.js-multirecommendCountButton')->text() : 0,
-                'responses_count'   =>  $post->filter('.js-bookmarkButton')->siblings()->count() > 0 ? $post->filter('.js-bookmarkButton')->siblings()->text():'0 Responses',
-                'article_image'     =>  $post->filter('.graf-image')->count() > 0 ? $post->filter('.graf-image')->attr('src'):'',
+                'creator' => $post->filter('.postMetaInline > .ds-link')->text(),
+                'creator_img' => $post->filter('img')->eq(0)->attr('src'),
+                'title' => $post->filter('.graf--title')->text(),
+                'subtitle' => $post->filter('.graf--subtitle')->count() ? $post->filter('.graf--subtitle')->text() : '',
+                'details' => $post->filter('.postMetaInline > .js-postMetaInlineSupplemental')->text() . ", " . $post->filter('.postMetaInline > .js-postMetaInlineSupplemental > .readingTime')->attr('title'),
+                'short_description' => $post->filter('.graf--p')->count() ? $post->filter('.graf--p')->text() : '',
+                'full_article_link' => $post->filter('.postArticle-readMore > a')->attr('href'),
+                'claps' => $post->filter('.js-multirecommendCountButton')->count() > 0 ? $post->filter('.js-multirecommendCountButton')->text() : 0,
+                'responses_count' => $post->filter('.js-bookmarkButton')->siblings()->count() > 0 ? $post->filter('.js-bookmarkButton')->siblings()->text() : '0 Responses',
+                'article_image' => $post->filter('.graf-image')->count() > 0 ? $post->filter('.graf-image')->attr('src') : '',
+                'related_tags' => $this->related_tags,
             ];
             $scrappedArticle = $this->getSingleArticleData($scrappedArticle, $post->filter('.postArticle-readMore > a')->attr('href'));
 
             $this->data = $scrappedArticle;
 
-            \Log::info(($index+1) . " article scrapped Successfully");
+            \Log::info(($index + 1) . " article scrapped Successfully");
         });
 
 //        $request = $this->data;
@@ -74,7 +84,7 @@ class Scrapper
                 $afterScroll = $page->evaluate('document.body.scrollHeight')->getReturnValue();
 
                 $articleCount = $page->evaluate("document.getElementsByClassName('streamItem').length")->getReturnValue();
-            } ;
+            };
         }
 
         $page->addScriptTag([
@@ -97,9 +107,9 @@ class Scrapper
         $this->getResponses($crawler);
 
         return array_merge($scrappedArticle, [
-            'body'        =>    $this->body,
-            'tags'        =>    $this->tags,
-            'responses'   =>    $this->responses,
+            'body' => $this->body,
+            'tags' => $this->tags,
+            'responses' => $this->responses,
         ]);
     }
 
@@ -109,11 +119,11 @@ class Scrapper
         $crawler->filterXPath('html/body/div/div/div[4]/div[2]/div[3]/div')->each(function ($data, $index) {
 
             array_push($this->responses, [
-                'responded_by'      =>  $data->filter('img')->attr('alt'),
-                'responded_image'   =>  $data->filter('img')->attr('src'),
-                'on_time'           =>  $data->filterXPath('div/div[1]/div/div[1]')->filter('a')->eq(1)->text(),
-                'response'          =>  $data->children()->children()->eq(1)->text(),
-                'claps'             => $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->count() > 0 ? $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->text() : 0,
+                'responded_by' => $data->filter('img')->attr('alt'),
+                'responded_image' => $data->filter('img')->attr('src'),
+                'on_time' => $data->filterXPath('div/div[1]/div/div[1]')->filter('a')->eq(1)->text(),
+                'response' => $data->children()->children()->eq(1)->text(),
+                'claps' => $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->count() > 0 ? $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->text() : 0,
             ]);
 
         });

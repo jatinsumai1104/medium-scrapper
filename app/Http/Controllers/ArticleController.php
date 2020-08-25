@@ -29,6 +29,7 @@ class ArticleController extends Controller
             'claps'             =>  $request['claps'],
             'responses_count'   =>  $request['responses_count'],
             'article_image'     =>  $request['article_image'],
+            'related_tags'      =>  $request['related_tags'],
         ]);
     }
 
@@ -80,7 +81,9 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        $article->tags;
+        $article->responses;
+        return response()->json($article);
     }
 
     /**

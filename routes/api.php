@@ -19,4 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/scrapper', 'ArticleController@index')->middleware('scrapper');
+Route::post('/articles', 'ArticleController@index')->middleware('scrapper');
+Route::get('/article/{article:title}', 'ArticleController@show');
