@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use HeadlessChromium\BrowserFactory;
 use HeadlessChromium\Page;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
 
 class Scrapper
@@ -22,17 +23,35 @@ class Scrapper
     public function handle($request, Closure $next)
     {
 
+        set_time_limit(30);
+
+        $start_time = now();
+
         $crawler = $this->getCrawler('https://medium.com/tag/' . $request['tag'], true, $request['index']);
+
+
+        if ($crawler == null) {
+            return $next($request);
+        }
 
         $this->related_tags = [];
 
-        $crawler->filter('.tags--postTags > li')->each(function ($related_tags) {
-            array_push($this->related_tags, $related_tags->text());
-        });
+
         $articles = $crawler->filter('.streamItem');
 
 
-        \Log::info("Scrapping Data");
+        if ($articles->count() == 0) {
+
+            $crawler->filter('.tags--postTags > li')->each(function ($related_tags) {
+                array_push($this->related_tags, $related_tags->text());
+            });
+
+            $this->data["related_tags"] = $this->related_tags;
+
+        }
+        if ($articles->count() < $request['index']) {
+            return $next($request);
+        }
 
         $articles->eq($request['index'])->each(function ($post, $index) {
             $scrappedArticle = [
@@ -46,20 +65,22 @@ class Scrapper
                 'claps' => $post->filter('.js-multirecommendCountButton')->count() > 0 ? $post->filter('.js-multirecommendCountButton')->text() : 0,
                 'responses_count' => $post->filter('.js-bookmarkButton')->siblings()->count() > 0 ? $post->filter('.js-bookmarkButton')->siblings()->text() : '0 Responses',
                 'article_image' => $post->filter('.graf-image')->count() > 0 ? $post->filter('.graf-image')->attr('src') : '',
-                'related_tags' => $this->related_tags,
             ];
             $scrappedArticle = $this->getSingleArticleData($scrappedArticle, $post->filter('.postArticle-readMore > a')->attr('href'));
 
             $this->data = $scrappedArticle;
-
-            \Log::info(($index + 1) . " article scrapped Successfully");
         });
 
-//        $request = $this->data;
+
+        $end_time = now();
+
+        $this->data['scrapping_time'] = $start_time->diffInSeconds($end_time);
+
 
         $request->replace($this->data);
 
         return $next($request);
+
     }
 
     public function getCrawler($url, $multiple = false, $articleIndex = 0)
@@ -73,18 +94,30 @@ class Scrapper
 
         $page->navigate($url)->waitForNavigation(Page::LOAD);
 
+        $title = $page->evaluate('document.title')->getReturnValue();
+
+        if (trim(explode("–", $title)[0], " ") == "Not Found") {
+            return null;
+        }
+
         if ($multiple) {
 
             $articleCount = $page->evaluate("document.getElementsByClassName('streamItem').length")->getReturnValue();
 
-            while ($articleCount <= $articleIndex) {
+            if ($articleCount != 0) {
 
-                $prevScroll = $page->evaluate('document.body.scrollHeight')->getReturnValue();
-                $page->evaluate('window.scrollTo(0, document.body.scrollHeight)');
-                $afterScroll = $page->evaluate('document.body.scrollHeight')->getReturnValue();
+                while ($articleCount <= $articleIndex) {
 
-                $articleCount = $page->evaluate("document.getElementsByClassName('streamItem').length")->getReturnValue();
-            };
+                    if($articleCount%10 != 0){
+                        break;
+                    }
+                    $prevScroll = $page->evaluate('document.body.scrollHeight')->getReturnValue();
+                    $page->evaluate('window.scrollTo(0, document.body.scrollHeight)');
+                    $afterScroll = $page->evaluate('document.body.scrollHeight')->getReturnValue();
+
+                    $articleCount = $page->evaluate("document.getElementsByClassName('streamItem').length")->getReturnValue();
+                }
+            }
         }
 
         $page->addScriptTag([
@@ -98,7 +131,8 @@ class Scrapper
         return new Crawler($pageHtml);
     }
 
-    public function getSingleArticleData($scrappedArticle, $url)
+    public
+    function getSingleArticleData($scrappedArticle, $url)
     {
         $crawler = $this->getCrawler($url);
 
@@ -113,7 +147,8 @@ class Scrapper
         ]);
     }
 
-    public function getResponses($crawler)
+    public
+    function getResponses($crawler)
     {
         $this->responses = [];
         $crawler->filterXPath('html/body/div/div/div[4]/div[2]/div[3]/div')->each(function ($data, $index) {
@@ -129,7 +164,8 @@ class Scrapper
         });
     }
 
-    public function getContentOfPost($crawler)
+    public
+    function getContentOfPost($crawler)
     {
         $this->body = "";
         $crawler->filter('article')->children()->last()->children('section')->each(function ($x) {
@@ -137,8 +173,9 @@ class Scrapper
             $x->filter(".n p,h1,h2,h3,h4,h5,h6,img,span")->each(function ($y) {
 
                 if ($y->nodeName() == 'img') {
-                    if ($y->attr('src') != "") {
-                        $this->body .= "<{$y->nodeName()} src='{$y->attr('src')}'/>";
+
+                    if ($y->attr('srcset') != "") {
+                        $this->body .= "<{$y->nodeName()} src='{$y->attr('src')}' class='img-fluid rounded d-block m-auto'/> ";
                     }
                 } else {
                     $this->body .= "<{$y->nodeName()}>{$y->text()}</{$y->nodeName()}>";
@@ -147,7 +184,8 @@ class Scrapper
         });
     }
 
-    public function getTags($crawler)
+    public
+    function getTags($crawler)
     {
         $this->tags = [];
         $crawler->filterXPath('html/body/div/div/div[7]/div/div[1]/div/div')->filter('li')->each(function ($data, $index) {

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import {useParams, withRouter} from 'react-router-dom';
 
+import fetchArticle from '../http/fetch-article';
 
 var parse = require('html-react-parser');
 
@@ -13,30 +14,15 @@ class Article extends React.Component {
         this.state = {
             data: [],
         }
+        this.setData = this.setData.bind(this);
     }
 
     componentDidMount() {
-        this.fetchData(this.props.match.params.title);
+        fetchArticle(this.props.match.params.title, this.setData);
     }
 
-    fetchData(title) {
-        fetch("http://127.0.0.1:8000/api/article/" + title, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({data: result});
-                    console.log(result);
-                },
-                (error) => {
-                    console.log('Error');
-                    console.log(error);
-                }
-            )
+    setData(data) {
+        this.setState({data: data});
     }
 
 
@@ -49,7 +35,8 @@ class Article extends React.Component {
             var tags = [];
 
             data.tags.forEach((tag) => {
-                tags.push(<a href={"/tag/"+tag.name.split(' ').join('-').toLowerCase()} className="btn ml-2" style={{backgroundColor: '#e3f2fd'}}
+                tags.push(<a href={"/tag/" + tag.name.split(' ').join('-').toLowerCase()} className="btn m-2"
+                             style={{backgroundColor: '#e3f2fd'}}
                              key={tag.id}>{tag.name}</a>);
             })
 
@@ -58,22 +45,24 @@ class Article extends React.Component {
 
             data.responses.forEach((response, index) => {
                 responses.push(
-                    <div className="media my-3" key={response.id}>
-                        <img className="d-flex mr-3 rounded-circle"
-                             src={response['responded_image']}
-                             alt=""
-                             width="50"/>
-                        <div className="media-body">
-                            <h5 className="mt-0">{response['responded_by']}</h5>
-                            {response['response']}
-                            <div className="mt-2 d-flex justify-content-between">
-                                <span className="text-muted">Claps {response['claps']}</span>
+                    <div key={response.id}>
+                        <div className="media my-3">
+                            <img className="d-flex mr-3 rounded-circle"
+                                 src={response['responded_image']}
+                                 alt=""
+                                 width="50"/>
+                            <div className="media-body">
+                                <h5 className="mt-0">{response['responded_by']}</h5>
+                                {response['response']}
+                                <div className="mt-2 d-flex justify-content-between">
+                                    <span className="text-muted">Claps {response['claps']}</span>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
+                        <hr key={index}/>
                     </div>
                 );
-                responses.push(<hr key={index}/>);
             })
 
 
@@ -98,10 +87,10 @@ class Article extends React.Component {
 
                                 {/*Author*/}
                                 <span className="mr-auto">
-                                <img src={data['creator_img']}
-                                     className="img-fluid rounded-circle mr-2 " alt="Responsive image" width='42'/> <a
-                                    href="#"> {data['creator']}</a>
-                            </span>
+                                    <img src={data['creator_img']}
+                                         className="img-fluid rounded-circle mr-2 " alt="Responsive image" width='42'/>
+                                         <a href="#" className="text-decoration-none"> {data['creator']}</a>
+                                </span>
 
                                 {/*Date/Time*/}
                                 <span>{data['details']}</span>
@@ -110,13 +99,10 @@ class Article extends React.Component {
 
                             <hr/>
 
-                            {/*Preview Image*/}
-                            <img className="img-fluid rounded" src={data['article_image']} alt=""/>
-
-                            <hr/>
-
-                            {/*Post Content*/}
-                            Body
+                            <div className="container">
+                                {/*Post Content*/}
+                                {parse(data['body'])}
+                            </div>
 
                             {/*{parse(data['body'])}*/}
 
@@ -141,25 +127,6 @@ class Article extends React.Component {
                                 </div>
                                 <div id="comments" className="collapse" aria-labelledby="comments-heading">
                                     <div className="card-body">
-                                        {/*Single Comment*/}
-                                        {/*<div className="media my-3">*/}
-                                        {/*    <img className="d-flex mr-3 rounded-circle"*/}
-                                        {/*         src="http://placehold.it/50x50"*/}
-                                        {/*         alt=""/>*/}
-                                        {/*    <div className="media-body">*/}
-                                        {/*        <h5 className="mt-0">Commenter Name</h5>*/}
-                                        {/*        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus*/}
-                                        {/*        scelerisque ante sollicitudin. Cras purus odio, vestibulum in*/}
-                                        {/*        vulputate at, tempus viverra turpis. Fusce condimentum nunc ac*/}
-                                        {/*        nisi vulputate fringilla. Donec lacinia congue felis in*/}
-                                        {/*        faucibus.*/}
-                                        {/*        <div className="mt-2 d-flex justify-content-between">*/}
-                                        {/*            <span className="text-muted">Claps 10K</span>*/}
-                                        {/*        </div>*/}
-                                        {/*    </div>*/}
-
-                                        {/*</div>*/}
-                                        {/*<hr/>*/}
                                         {responses}
                                     </div>
                                 </div>

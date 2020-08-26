@@ -25,6 +25,7 @@ class CreateArticlesTable extends Migration
             $table->string('full_article_link');
             $table->string('claps');
             $table->string('body');
+            $table->string('scrapping_time');
             $table->timestamps();
         });
     }

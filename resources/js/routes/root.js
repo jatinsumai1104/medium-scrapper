@@ -3,6 +3,7 @@ import {Link, Route, Switch} from "react-router-dom";
 
 import Articles from "../pages/articles";
 import Article from "../pages/article";
+import History from "../pages/history";
 import Navbar from "../components/navbar";
 
 const Root = () => {
@@ -18,6 +19,9 @@ const Root = () => {
                 </Route>
                 <Route exact path="/tag/:tag">
                     <Articles/>
+                </Route>
+                <Route exact path="/history">
+                    <History/>
                 </Route>
             </Switch>
         </>

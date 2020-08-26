@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import useHttp from '../hooks/http';
+import fetchArticles from '../http/fetch-articles';
 
 
 class SearchBox extends React.Component {
@@ -18,11 +18,15 @@ class SearchBox extends React.Component {
 
     searchArticles(event) {
         event.preventDefault();
-        useHttp('http://127.0.0.1:8000/api/articles', this.state.value, this.props.article_count, this.props.setScrappedData);
+        if(this.state.value != ''){
+            document.getElementById('articles').style.display = 'block';
+            fetchArticles('http://127.0.0.1:8000/api/articles', this.state.value, this.props.article_count, true, this.props.setScrappedData);
+        }
     }
 
     handleChange(event) {
-        console.log('Text Changed');
+        if(event)
+        this.props.restoreState();
         this.setState({value: event.target.value});
     }
 

@@ -1,10 +1,14 @@
-// import React, {useState, useEffect} from 'react';
 
-const useHttp = (url, value, article_count, callback) => {
-    console.log('Value: ' + value);
+import setHistory from './set-history';
+
+const fetchArticles = (url, value, article_count, save_history, callback) => {
+
     if (value != "") {
+
+        if(save_history)
+            setHistory('/tag/'+value);
+
         for (var i = article_count; i < (article_count + 2); i++) {
-            console.log("Fetching: " + i);
 
             fetch(url, {
                 method: 'POST',
@@ -19,16 +23,13 @@ const useHttp = (url, value, article_count, callback) => {
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        console.log(result);
                         callback(result, i, value);
                     },
                     (error) => {
-                        console.log('Error');
-                        console.log(error);
+                        callback([], i, value);
                     }
                 )
         }
     }
 }
-export default useHttp;
-// http://127.0.0.1:8000/api/articles
+export default fetchArticles;
