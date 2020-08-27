@@ -12,7 +12,7 @@ const ArticleList = props => {
             switch (status) {
                 case 'crawled':
                     const scrappedData = props.ScrappedData[index];
-                    if (scrappedData['title'] != null ) {
+                    if (scrappedData['title'] != null) {
                         if(index == 0){
                             document.getElementById('load10More').style.display = "block";
                         }

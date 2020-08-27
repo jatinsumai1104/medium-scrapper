@@ -19,7 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/articles', 'ArticleController@index')->middleware('scrapper');
+Route::post('/articles', function() {
+    return response()->json("Hello World");
+});
 Route::post('/history', 'SearchHistoryController@store');
 Route::get('/history', 'SearchHistoryController@index');
 Route::get('/article/{article:title}', 'ArticleController@show');

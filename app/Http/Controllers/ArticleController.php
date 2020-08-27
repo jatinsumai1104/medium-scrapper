@@ -17,27 +17,32 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        set_time_limit(15);
-        if (isset($request["tag"])) {
-            //Searched tag gets 404 page
-            $article = Article::where([
-                ['creator', 'like', '%' . $request['tag'] . '%'],
-                ['title', 'like', '%' . $request['tag'] . '%'],
-                ['subtitle', 'like', '%' . $request['tag'] . '%'],
-                ['short_description', 'like', '%' . $request['tag'] . '%'],
-                ['body', 'like', '%' . $request['tag'] . '%'],
-            ])->skip($request["index"] - 1)->first();
-            return response()->json($article);
+        $data = [];
+        switch($request["status"]){
+
+            case "Page Not Found":
+                $data = Article::where([
+                    ['creator', 'like', '%' . $request['tag'] . '%'],
+                    ['title', 'like', '%' . $request['tag'] . '%'],
+                    ['subtitle', 'like', '%' . $request['tag'] . '%'],
+                    ['short_description', 'like', '%' . $request['tag'] . '%'],
+                    ['body', 'like', '%' . $request['tag'] . '%'],
+                ])->skip($request["index"] - 1)->first() ?:$request->all()
+                ;break;
+            case "Article Not Found":
+                $data = $request;
+                if(!isset($request['related_tags'])){
+                    $data = [];
+                }
+                ;break;
+            case "Article Found":
+                $data = $this->store($request)->toArray();
+                ;break;
         }
-
-        if (!isset($request['title'])) {
-            //Searched Tag has No Articles so send related tags
-            return response()->json($request);
+        if($data === null){
+            $data = [];
         }
-
-        $article = $this->store($request);
-        return response()->json($article->toArray());
-
+        return response()->json($data);
     }
 
 

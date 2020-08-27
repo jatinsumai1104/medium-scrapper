@@ -21,15 +21,13 @@ class Scrapper
      */
     public function handle($request, Closure $next)
     {
-
-        set_time_limit(30);
-
         $start_time = now();
 
         $crawler = $this->getCrawler('https://medium.com/tag/' . $request['tag'], true, $request['index']);
 
 
-        if ($crawler == null) {
+        if ($crawler === "404") {
+            $request["status"] = "Page Not Found";
             return $next($request);
         }
 
@@ -47,9 +45,19 @@ class Scrapper
 
             $this->data["related_tags"] = $this->related_tags;
 
+            $this->data["status"] = "Article Not Found";
+
+            $request->replace($this->data);
+
+            return $next($request);
+
 
         }
-        if ($articles->count() < $request['index']) {
+        if ($articles->count() <= $request['index']) {
+            $this->data["status"] = "Article Not Found";
+
+            $request->replace($this->data);
+
             return $next($request);
         }
 
@@ -77,7 +85,7 @@ class Scrapper
         $end_time = now();
 
         $this->data['scrapping_time'] = $start_time->diffInSeconds($end_time);
-
+        $this->data["status"] = "Article Found";
 
         $request->replace($this->data);
 
@@ -102,7 +110,7 @@ class Scrapper
 
             //404
 
-            return null;
+            return "404";
         }
 
         if ($multiple) {
