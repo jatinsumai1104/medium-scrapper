@@ -1,6 +1,6 @@
 const fetchHistory = (setHistory) => {
     // console.log("Get History");
-    fetch("api/history", {
+    fetch("api/histories", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
