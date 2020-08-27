@@ -98,7 +98,7 @@ class Scrapper
 
         $browserFactory = new BrowserFactory('google-chrome');
 
-        $browser = $browserFactory->createBrowser(['headless' => true,'noSandbox' => true, customFlags => ['--disable-dev-shm-usage']]);
+        $browser = $browserFactory->createBrowser(['headless' => true,'noSandbox' => true, 'customFlags' => ['--disable-dev-shm-usage']]);
 
         $page = $browser->createPage();
 
