@@ -88,7 +88,7 @@ class Scrapper
     public function getCrawler($url, $multiple = false, $articleIndex = 0)
     {
 
-        $browserFactory = new BrowserFactory('GOOGLE_CHROME_BIN');
+        $browserFactory = new BrowserFactory('google-chrome');
 
         $browser = $browserFactory->createBrowser();
 
