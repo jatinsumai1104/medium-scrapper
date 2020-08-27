@@ -127,7 +127,7 @@ class Scrapper
 
         $page->addScriptTag([
             'url' => 'https://code.jquery.com/jquery-3.3.1.min.js'
-        ])->waitForResponse(10);
+        ])->waitForResponse();
 
         $pageHtml = $page->evaluate('$("html").html()')->getReturnValue();
 
