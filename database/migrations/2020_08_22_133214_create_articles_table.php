@@ -16,15 +16,15 @@ class CreateArticlesTable extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->string('creator');
-            $table->string('creator_img');
+            $table->mediumText('creator_img');
             $table->string('title');
             $table->string('subtitle');
             $table->string('details');
-            $table->string('article_image');
+            $table->mediumText('article_image');
             $table->string('short_description');
             $table->string('full_article_link');
             $table->string('claps');
-            $table->string('body');
+            $table->longText('body');
             $table->string('scrapping_time');
             $table->string('responses_count')->default(0);
             $table->string("visit_count")->default(0);
