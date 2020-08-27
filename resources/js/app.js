@@ -13,7 +13,7 @@ require('./bootstrap');
 import React from "react";
 import { render } from "react-dom";
 
-import Root from './routes/root';
+import Root from './root/root';
 import { BrowserRouter } from "react-router-dom";
 
 render(

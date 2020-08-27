@@ -12,19 +12,16 @@ const ArticleList = props => {
             switch (status) {
                 case 'crawled':
                     const scrappedData = props.ScrappedData[index];
-                    console.log(scrappedData);
-                    if (scrappedData['title'] != null && scrappedData.length != 0 && Object.keys(scrappedData).length != 0) {
-
-                        console.log(index);
+                    if (scrappedData['title'] != null ) {
                         if(index == 0){
                             document.getElementById('load10More').style.display = "block";
                         }
                         temp.push(
                             <div className="card my-2" key={index}>
                                 <div className="card-header d-flex">
-                                    <span className="text-success font-weight-bold text-capitalize">
+                                    <span className="font-weight-bold text-capitalize" style={{color: '#28AAFB'}}>
                                         <img src={scrappedData['creator_img']}
-                                             className="img-fluid rounded-circle mr-2 " alt="Responsive image" width='42'/>
+                                             className="img-fluid rounded-circle mr-2 " alt={scrappedData['creator']} width='42'/>
                                         {scrappedData['creator']}
                                     </span>
                                     <span className="text-muted d-flex align-items-center ml-auto">{scrappedData['details']}</span>
@@ -34,7 +31,7 @@ const ArticleList = props => {
                                     <h5 className="card-subtitle my-2 text-muted">{scrappedData['subtitle']}</h5>
 
                                     <img src={scrappedData['article_image']} className="img-fluid my-3 rounded-lg"
-                                         alt="Responsive image"/>
+                                         alt="Article Image"/>
 
                                     <p>{scrappedData['short_description']}</p>
                                     <a href={'/article/' + scrappedData['title']} className="btn btn-light ml-0">Read
@@ -42,9 +39,9 @@ const ArticleList = props => {
 
                                 </div>
                                 <div className="card-footer d-flex justify-content-between">
-                                    <span className="text-success">Claps {scrappedData['claps']}</span>
-                                    <span className="text-success">Total Scrapping Time: {scrappedData["scrapping_time"]}s</span>
-                                    <span className="text-success">{scrappedData['responses_count']}</span>
+                                    <span  style={{color: '#28AAFB'}}>Claps {scrappedData['claps']}</span>
+                                    <span  style={{color: '#28AAFB'}}>Total Scrapping Time: {scrappedData["scrapping_time"]}s</span>
+                                    <span  style={{color: '#28AAFB'}}>{scrappedData['responses_count']}</span>
                                 </div>
                             </div>
                         );

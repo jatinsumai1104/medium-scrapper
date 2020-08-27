@@ -4,6 +4,7 @@ import {Link, Route, Switch} from "react-router-dom";
 import Articles from "../pages/articles";
 import Article from "../pages/article";
 import History from "../pages/history";
+import PopularArticles from "../pages/popular-articles";
 import Navbar from "../components/navbar";
 
 const Root = () => {
@@ -22,6 +23,9 @@ const Root = () => {
                 </Route>
                 <Route exact path="/history">
                     <History/>
+                </Route>
+                <Route exact path="/popular-articles">
+                    <PopularArticles/>
                 </Route>
             </Switch>
         </>

@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import {useParams, withRouter} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 
 import fetchArticle from '../http/fetch-article';
 
@@ -18,6 +18,7 @@ class Article extends React.Component {
     }
 
     componentDidMount() {
+        document.title = this.props.match.params.title;
         fetchArticle(this.props.match.params.title, this.setData);
     }
 
@@ -49,7 +50,7 @@ class Article extends React.Component {
                         <div className="media my-3">
                             <img className="d-flex mr-3 rounded-circle"
                                  src={response['responded_image']}
-                                 alt=""
+                                 alt={response['responded_by']}
                                  width="50"/>
                             <div className="media-body">
                                 <h5 className="mt-0">{response['responded_by']}</h5>
@@ -88,8 +89,8 @@ class Article extends React.Component {
                                 {/*Author*/}
                                 <span className="mr-auto">
                                     <img src={data['creator_img']}
-                                         className="img-fluid rounded-circle mr-2 " alt="Responsive image" width='42'/>
-                                         <a href="#" className="text-decoration-none"> {data['creator']}</a>
+                                         className="img-fluid rounded-circle mr-2 " alt={data['creator']} width='42'/>
+                                         <a href="#" className="text-decoration-none" style={{color: '#28AAFB'}}> {data['creator']}</a>
                                 </span>
 
                                 {/*Date/Time*/}
@@ -118,7 +119,7 @@ class Article extends React.Component {
                                 <div className="card-header" style={{backgroundColor: '#e3f2fd'}} id="comments-heading">
                                     <h2 className="mb-0">
                                         <a className="btn btn-block text-left collapsed"
-                                           style={{backgroundColor: '#e3f2fd'}} type="button"
+                                           style={{backgroundColor: '#28AAFB'}} type="button"
                                            data-toggle="collapse" data-target="#comments" aria-expanded="false"
                                            aria-controls="comments">
                                             Comments
@@ -142,10 +143,10 @@ class Article extends React.Component {
             );
         } else {
             return (
-                <div className="container">
-                    <h1 className="mt-4 text-center">Fetching Data</h1>
+                <div className="container shadow-lg p-3 my-5 bg-white rounded mt-4">
+                    <h3 className="text-center mb-4">Fetching Articles Data Please wait...</h3>
                 </div>
-            );
+            )
         }
 
     }

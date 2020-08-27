@@ -1,8 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import {useParams, withRouter} from 'react-router-dom';
 
-import getHistory from '../http/get-history';
+import fetchHistory from '../http/fetch-history';
 
 class History extends React.Component {
 
@@ -15,7 +14,8 @@ class History extends React.Component {
     }
 
     componentDidMount() {
-        getHistory(this.setHistory);
+        document.title = 'History - Medium Scrapper';
+        fetchHistory(this.setHistory);
     }
 
     setHistory(data) {
@@ -30,12 +30,11 @@ class History extends React.Component {
             var history = [];
 
             stateHistory.forEach((histories) => {
-                // console.log(histories.name);
                 history.push(
                     <a href={histories['name']} className="text-decoration-none box-hover-shadow" key={histories['name'] + ":" + histories['created_at']}>
                         <div className="card my-2 shadow-sm" >
                             <div className="card-header d-flex">
-                                <span className="text-success font-weight-bold text-capitalize">
+                                <span className="font-weight-bold text-capitalize" style={{color: '#28AAFB'}}>
                                     {histories['name']}
                                 </span>
                                 <span className="text-muted d-flex align-items-center ml-auto">{histories['created_at'].split('.')[0].replace('T', ', ')}</span>
@@ -62,7 +61,7 @@ class History extends React.Component {
                     <h3 className="text-center mb-4">Search History</h3>
                     <div className="card my-2 shadow-sm">
                         <div className="card-header d-flex">
-                                <span className="text-success font-weight-bold text-capitalize">
+                                <span className="font-weight-bold text-capitalize" style={{color: '#28AAFB'}}>
                                     No Search History Yet
                                 </span>
                         </div>
@@ -74,5 +73,5 @@ class History extends React.Component {
     }
 }
 
-export default withRouter(History);
+export default History;
 

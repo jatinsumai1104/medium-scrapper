@@ -8,7 +8,7 @@ const fetchArticles = (url, value, article_count, save_history, callback) => {
         if(save_history)
             setHistory('/tag/'+value);
 
-        for (var i = article_count; i < (article_count + 2); i++) {
+        for (var i = article_count; i < (article_count + 10); i++) {
 
             fetch(url, {
                 method: 'POST',

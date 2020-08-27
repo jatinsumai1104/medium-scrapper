@@ -14,7 +14,7 @@ class SearchHistoryController extends Controller
      */
     public function index()
     {
-        return response()->json(SearchHistory::get()->toArray());
+        return response()->json(SearchHistory::orderBy('created_at', 'DESC')->get()->toArray());
     }
 
     /**

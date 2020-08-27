@@ -24,5 +24,6 @@ Route::post('/history', 'SearchHistoryController@store');
 Route::get('/history', 'SearchHistoryController@index');
 Route::get('/article/{article:title}', 'ArticleController@show');
 
+Route::get('/popular-articles', 'ArticleController@getPopularArticles');
 
 

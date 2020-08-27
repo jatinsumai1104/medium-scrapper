@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import ReactDOM from 'react-dom';
+
 import 'bootstrap/dist/css/bootstrap.css';
 
 import SearchBox from '../components/search-box';
@@ -15,7 +15,7 @@ class Articles extends React.Component {
 
     constructor(props) {
         super(props);
-        var temp = new Array(2).fill("pending");
+        var temp = new Array(10).fill("pending");
         temp[0] = "crawling";
         this.state = {
             data: [],
@@ -29,6 +29,7 @@ class Articles extends React.Component {
     }
 
     componentDidMount() {
+        document.title = 'Home - Medium Scrapper';
         if (this.props.match.params.tag) {
             document.getElementById('article-search-component').style.display = 'none';
             document.getElementById('articles').style.display = 'block';
@@ -55,11 +56,12 @@ class Articles extends React.Component {
     }
 
     restoreState() {
-        var temp = new Array(2).fill("pending");
+        var temp = new Array(10).fill("pending");
         temp[0] = "crawling";
         this.setState({value: '', data: [], status: temp, related_tags: []});
         document.getElementById('articles').style.display = 'none';
         document.getElementById('load10More').style.display = 'none';
+        document.getElementById('related_tags').style.display = 'none';
     }
 
     load10More() {

@@ -12,10 +12,11 @@ const Navbar = (props) => {
     useEffect(() => {
         setCurrentPath(location.pathname);
     }, [location.pathname]);
+
     return (
         <nav className="navbar navbar-expand-lg navbar-light" style={{backgroundColor: '#e3f2fd'}}>
             <div className="container">
-                <a className="navbar-brand" href="#">Medium Scrapper</a>
+                <a className="navbar-brand" href="/">Medium Scrapper</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -26,10 +27,10 @@ const Navbar = (props) => {
                             <a className="nav-link" href="/">Home {currentPath == "/" ? <span className="sr-only">(current)</span>:''}</a>
                         </li>
                         <li className={currentPath == '/history' ?'nav-item active':''} >
-                            <a className="nav-link" href="/history">History</a>
+                            <a className="nav-link" href="/history">History {currentPath == "/history" ? <span className="sr-only">(current)</span>:''}</a>
                         </li>
-                        <li className="nav-item {currentPath == '/' ?'active:''}">
-                            <a className="nav-link" href="/">Most Popular Articles</a>
+                        <li className="nav-item {currentPath == '/popular-articles' ?'active:''}">
+                            <a className="nav-link" href="/popular-articles">Popular Articles {currentPath == "/popular-articles" ? <span className="sr-only">(current)</span>:''}</a>
                         </li>
                     </ul>
                 </div>

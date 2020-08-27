@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use HeadlessChromium\BrowserFactory;
 use HeadlessChromium\Page;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
 
 class Scrapper
@@ -14,7 +13,7 @@ class Scrapper
 //    $related_tags = [];
 
     /**
-     * Handle an incoming request.
+     * Scrapping data from webpage.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next
@@ -48,12 +47,15 @@ class Scrapper
 
             $this->data["related_tags"] = $this->related_tags;
 
+
         }
         if ($articles->count() < $request['index']) {
             return $next($request);
         }
 
         $articles->eq($request['index'])->each(function ($post, $index) {
+
+
             $scrappedArticle = [
                 'creator' => $post->filter('.postMetaInline > .ds-link')->text(),
                 'creator_img' => $post->filter('img')->eq(0)->attr('src'),
@@ -97,6 +99,9 @@ class Scrapper
         $title = $page->evaluate('document.title')->getReturnValue();
 
         if (trim(explode("–", $title)[0], " ") == "Not Found") {
+
+            //404
+
             return null;
         }
 
@@ -131,8 +136,7 @@ class Scrapper
         return new Crawler($pageHtml);
     }
 
-    public
-    function getSingleArticleData($scrappedArticle, $url)
+    public function getSingleArticleData($scrappedArticle, $url)
     {
         $crawler = $this->getCrawler($url);
 
@@ -141,8 +145,8 @@ class Scrapper
         $this->getResponses($crawler);
 
         return array_merge($scrappedArticle, [
-            'body' => $this->body,
-            'tags' => $this->tags,
+            'body'      => $this->body,
+            'tags'      => $this->tags,
             'responses' => $this->responses,
         ]);
     }
@@ -154,11 +158,11 @@ class Scrapper
         $crawler->filterXPath('html/body/div/div/div[4]/div[2]/div[3]/div')->each(function ($data, $index) {
 
             array_push($this->responses, [
-                'responded_by' => $data->filter('img')->attr('alt'),
-                'responded_image' => $data->filter('img')->attr('src'),
-                'on_time' => $data->filterXPath('div/div[1]/div/div[1]')->filter('a')->eq(1)->text(),
-                'response' => $data->children()->children()->eq(1)->text(),
-                'claps' => $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->count() > 0 ? $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->text() : 0,
+                'responded_by'      => $data->filter('img')->attr('alt'),
+                'responded_image'   => $data->filter('img')->attr('src'),
+                'on_time'           => $data->filterXPath('div/div[1]/div/div[1]')->filter('a')->eq(1)->text(),
+                'response'          => $data->children()->children()->eq(1)->text(),
+                'claps'             => $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->count() > 0 ? $data->filterXPath('div/div[1]/div[3]/div[1]')->filter('h4')->text() : 0,
             ]);
 
         });
@@ -175,13 +179,24 @@ class Scrapper
                 if ($y->nodeName() == 'img') {
 
                     if ($y->attr('srcset') != "") {
-                        $this->body .= "<{$y->nodeName()} src='{$y->attr('src')}' class='img-fluid rounded d-block m-auto'/> ";
+                        $this->body .= "<{$y->nodeName()} src='{$y->attr('src')}' class='img-fluid rounded d-block my-2 mx-auto'/> ";
                     }
                 } else {
                     $this->body .= "<{$y->nodeName()}>{$y->text()}</{$y->nodeName()}>";
                 }
             });
         });
+
+        $occurrence = 0;
+        $offset = 0;
+
+        while (($offset = strpos($this->body, '<img', $offset)) !== false) {
+            if ($occurrence++) {
+                break;
+            }
+            $offset += strlen('<img');
+        }
+        $this->body = substr($this->body, $offset);
     }
 
     public

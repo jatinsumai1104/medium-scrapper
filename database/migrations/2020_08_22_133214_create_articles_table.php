@@ -26,6 +26,8 @@ class CreateArticlesTable extends Migration
             $table->string('claps');
             $table->string('body');
             $table->string('scrapping_time');
+            $table->string('responses_count')->default(0);
+            $table->string("visit_count")->default(0);
             $table->timestamps();
         });
     }
