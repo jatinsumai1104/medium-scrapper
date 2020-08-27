@@ -72735,7 +72735,7 @@ var SearchBox = /*#__PURE__*/function (_React$Component) {
 
       if (this.state.value != '') {
         document.getElementById('articles').style.display = 'block';
-        Object(_http_fetch_articles__WEBPACK_IMPORTED_MODULE_2__["default"])('http://127.0.0.1:8000/api/articles', this.state.value, this.props.article_count, true, this.props.setScrappedData);
+        Object(_http_fetch_articles__WEBPACK_IMPORTED_MODULE_2__["default"])(this.state.value, this.props.article_count, true, this.props.setScrappedData);
       }
     }
   }, {

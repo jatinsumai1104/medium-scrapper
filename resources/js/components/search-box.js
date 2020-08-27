@@ -20,7 +20,7 @@ class SearchBox extends React.Component {
         event.preventDefault();
         if(this.state.value != ''){
             document.getElementById('articles').style.display = 'block';
-            fetchArticles('http://127.0.0.1:8000/api/articles', this.state.value, this.props.article_count, true, this.props.setScrappedData);
+            fetchArticles(this.state.value, this.props.article_count, true, this.props.setScrappedData);
         }
     }
 
