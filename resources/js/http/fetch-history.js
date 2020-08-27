@@ -1,6 +1,6 @@
 const fetchHistory = (setHistory) => {
     // console.log("Get History");
-    fetch("http://127.0.0.1:8000/api/history", {
+    fetch("api/history", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

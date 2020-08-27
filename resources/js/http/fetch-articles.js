@@ -1,7 +1,7 @@
 
 import setHistory from './set-history';
 
-const fetchArticles = (url, value, article_count, save_history, callback) => {
+const fetchArticles = (value, article_count, save_history, callback) => {
 
     if (value != "") {
 
@@ -10,7 +10,7 @@ const fetchArticles = (url, value, article_count, save_history, callback) => {
 
         for (var i = article_count; i < (article_count + 10); i++) {
 
-            fetch(url, {
+            fetch('api/articles', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

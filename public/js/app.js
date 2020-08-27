@@ -72790,7 +72790,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var fetchArticle = function fetchArticle(title, setData) {
   Object(_set_history__WEBPACK_IMPORTED_MODULE_0__["default"])('/article/' + title);
-  fetch("http://127.0.0.1:8000/api/article/" + title, {
+  fetch("api/article/" + title, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -72820,12 +72820,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _set_history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./set-history */ "./resources/js/http/set-history.js");
 
 
-var fetchArticles = function fetchArticles(url, value, article_count, save_history, callback) {
+var fetchArticles = function fetchArticles(value, article_count, save_history, callback) {
   if (value != "") {
     if (save_history) Object(_set_history__WEBPACK_IMPORTED_MODULE_0__["default"])('/tag/' + value);
 
     for (var i = article_count; i < article_count + 10; i++) {
-      fetch(url, {
+      fetch('api/articles', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -72860,7 +72860,7 @@ var fetchArticles = function fetchArticles(url, value, article_count, save_histo
 __webpack_require__.r(__webpack_exports__);
 var fetchHistory = function fetchHistory(setHistory) {
   // console.log("Get History");
-  fetch("http://127.0.0.1:8000/api/history", {
+  fetch("api/history", {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -72889,7 +72889,7 @@ var fetchHistory = function fetchHistory(setHistory) {
 __webpack_require__.r(__webpack_exports__);
 var FetchPopularArticles = function FetchPopularArticles(callback) {
   // console.log("Get History");
-  fetch("http://127.0.0.1:8000/api/popular-articles", {
+  fetch("api/popular-articles", {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -72918,7 +72918,7 @@ var FetchPopularArticles = function FetchPopularArticles(callback) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var setHistory = function setHistory(url) {
-  fetch("http://127.0.0.1:8000/api/history/", {
+  fetch("api/history/", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -73213,7 +73213,7 @@ var Articles = /*#__PURE__*/function (_React$Component) {
       if (this.props.match.params.tag) {
         document.getElementById('article-search-component').style.display = 'none';
         document.getElementById('articles').style.display = 'block';
-        Object(_http_fetch_articles__WEBPACK_IMPORTED_MODULE_6__["default"])('http://127.0.0.1:8000/api/articles', this.props.match.params.tag, this.state.data.length, true, this.setScrappedData);
+        Object(_http_fetch_articles__WEBPACK_IMPORTED_MODULE_6__["default"])(this.props.match.params.tag, this.state.data.length, true, this.setScrappedData);
       }
     }
   }, {
@@ -73262,9 +73262,9 @@ var Articles = /*#__PURE__*/function (_React$Component) {
     key: "load10More",
     value: function load10More() {
       document.getElementById('articles').style.display = 'block';
-      Object(_http_fetch_articles__WEBPACK_IMPORTED_MODULE_6__["default"])('http://127.0.0.1:8000/api/articles', this.state.value, this.state.data.length, false, this.setScrappedData);
+      Object(_http_fetch_articles__WEBPACK_IMPORTED_MODULE_6__["default"])(this.state.value, this.state.data.length, false, this.setScrappedData);
       var status = this.state.status.slice();
-      var temp = new Array(2).fill("pending");
+      var temp = new Array(10).fill("pending");
       temp[0] = "crawling";
       status.push.apply(status, _toConsumableArray(temp));
       this.setState({

@@ -1,6 +1,6 @@
 const FetchPopularArticles = (callback) => {
     // console.log("Get History");
-    fetch("http://127.0.0.1:8000/api/popular-articles", {
+    fetch("api/popular-articles", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

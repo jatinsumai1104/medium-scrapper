@@ -33,7 +33,7 @@ class Articles extends React.Component {
         if (this.props.match.params.tag) {
             document.getElementById('article-search-component').style.display = 'none';
             document.getElementById('articles').style.display = 'block';
-            fetchArticles('http://127.0.0.1:8000/api/articles', this.props.match.params.tag, this.state.data.length, true, this.setScrappedData);
+            fetchArticles(this.props.match.params.tag, this.state.data.length, true, this.setScrappedData);
         }
     }
 
@@ -66,9 +66,9 @@ class Articles extends React.Component {
 
     load10More() {
         document.getElementById('articles').style.display = 'block';
-        fetchArticles('http://127.0.0.1:8000/api/articles', this.state.value, this.state.data.length, false, this.setScrappedData);
+        fetchArticles(this.state.value, this.state.data.length, false, this.setScrappedData);
         var status = this.state.status.slice();
-        var temp = new Array(2).fill("pending");
+        var temp = new Array(10).fill("pending");
         temp[0] = "crawling";
         status.push(...temp);
         this.setState({status: status});

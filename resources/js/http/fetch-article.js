@@ -5,7 +5,7 @@ const fetchArticle = (title, setData) => {
 
     setHistory('/article/'+title);
 
-    fetch("http://127.0.0.1:8000/api/article/" + title, {
+    fetch("api/article/" + title, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
