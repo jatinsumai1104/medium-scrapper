@@ -90,7 +90,7 @@ class Scrapper
 
         $browserFactory = new BrowserFactory('google-chrome');
 
-        $browser = $browserFactory->createBrowser(['headless' => true]);
+        $browser = $browserFactory->createBrowser(['headless' => true,'noSandbox' => true]);
 
         $page = $browser->createPage();
 
