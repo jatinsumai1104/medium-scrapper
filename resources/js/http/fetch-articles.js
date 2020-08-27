@@ -5,8 +5,8 @@ const fetchArticles = (value, article_count, save_history, callback) => {
 
     if (value != "") {
 
-        // if(save_history)
-        //     setHistory('/tag/'+value);
+        if(save_history)
+            setHistory('/tag/'+value);
 
         for (var i = article_count; i < (article_count + 10); i++) {
 
