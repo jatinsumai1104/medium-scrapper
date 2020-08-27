@@ -72860,7 +72860,7 @@ var fetchArticles = function fetchArticles(value, article_count, save_history, c
 __webpack_require__.r(__webpack_exports__);
 var fetchHistory = function fetchHistory(setHistory) {
   // console.log("Get History");
-  fetch("api/histories", {
+  fetch("api/history", {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
