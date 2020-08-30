@@ -21,6 +21,8 @@ class Scrapper
      */
     public function handle($request, Closure $next)
     {
+        set_time_limit(0);
+        
         $start_time = now();
 
         $crawler = $this->getCrawler('https://medium.com/tag/' . $request['tag'], true, $request['index']);
