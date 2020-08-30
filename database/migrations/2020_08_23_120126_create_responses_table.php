@@ -13,17 +13,13 @@ class CreateResponsesTable extends Migration
      */
     public function up()
     {
-//        Schema::create('responses', function (Blueprint $table) {
-//            $table->id();
-//            $table->timestamps();
-//        });
         Schema::create('responses', function (Blueprint $table) {
             $table->id();
-            $table->string("responded_by");
-            $table->string("responded_image");
-            $table->string("on_time");
-            $table->string("response");
-            $table->string("claps");
+            $table->longText("responded_by");
+            $table->longText("responded_image");
+            $table->longText("on_time");
+            $table->longText("response");
+            $table->longText("claps");
             $table->timestamps();
         });
         Schema::create('article_response', function (Blueprint $table) {
