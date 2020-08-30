@@ -1,6 +1,6 @@
 const FetchPopularArticles = (callback) => {
     // console.log("Get History");
-    fetch("api/popular-articles", {
+    fetch("/api/popular-articles", {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
