@@ -8,6 +8,8 @@ const ArticleList = props => {
 
     useEffect(() => {
         var temp = [];
+
+
         props.status.forEach((status, index) => {
             switch (status) {
                 case 'crawled':
@@ -16,12 +18,23 @@ const ArticleList = props => {
                         if(index == 0){
                             document.getElementById('load10More').style.display = "block";
                         }
+                        let article_img = "";
+                        if(scrappedData['article_image']){
+                             article_img = (<img src={scrappedData['article_image']} className="img-fluid my-3 rounded-lg"
+                                 alt="Article Image"/>);
+                        }
+
+                        let creator_img = "";
+                        if(scrappedData['article_image']){
+                            creator_img = (<img src={scrappedData['creator_img']}
+                                                className="img-fluid rounded-circle mr-2 " alt={scrappedData['creator']} width='42'/>);
+                        }
+
                         temp.push(
                             <div className="card my-2" key={index}>
                                 <div className="card-header d-flex">
                                     <span className="font-weight-bold text-capitalize" style={{color: '#28AAFB'}}>
-                                        <img src={scrappedData['creator_img']}
-                                             className="img-fluid rounded-circle mr-2 " alt={scrappedData['creator']} width='42'/>
+                                        {creator_img}
                                         {scrappedData['creator']}
                                     </span>
                                     <span className="text-muted d-flex align-items-center ml-auto">{scrappedData['details']}</span>
@@ -30,8 +43,7 @@ const ArticleList = props => {
                                     <h2 className="card-title ">{scrappedData['title']}</h2>
                                     <h5 className="card-subtitle my-2 text-muted">{scrappedData['subtitle']}</h5>
 
-                                    <img src={scrappedData['article_image']} className="img-fluid my-3 rounded-lg"
-                                         alt="Article Image"/>
+                                    {article_img}
 
                                     <p>{scrappedData['short_description']}</p>
                                     <a href={'/article/' + scrappedData['title']} className="btn btn-light ml-0">Read
