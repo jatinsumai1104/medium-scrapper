@@ -73342,7 +73342,7 @@ var Navbar = function Navbar(props) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("nav", {
     className: "navbar navbar-expand-lg navbar-light",
     style: {
-      backgroundColor: '#57a846'
+      backgroundColor: '#e3f2fd'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "container"
@@ -73750,6 +73750,12 @@ var setHistory = function setHistory(url) {
     body: JSON.stringify({
       'search': url
     })
+  }).then(function (res) {
+    return res.json();
+  }).then(function (result) {
+    console.log(result);
+  }, function (error) {
+    console.log(error);
   });
 };
 
