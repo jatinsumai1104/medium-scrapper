@@ -1,5 +1,5 @@
-const setHistory = (url) => {
-    fetch("/api/history/", {
+async function setHistory(url){
+    await fetch("/api/history/", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
