@@ -73760,7 +73760,7 @@ function _setHistory() {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return fetch("/api/history/", {
+            return fetch("/api/history", {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'

@@ -1,5 +1,5 @@
 async function setHistory(url){
-    await fetch("/api/history/", {
+    await fetch("/api/history", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
