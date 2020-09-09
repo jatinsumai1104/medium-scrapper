@@ -8,6 +8,15 @@ const setHistory = (url) => {
             'search': url,
         }),
     })
+    .then(res => res.json())
+    .then(
+        (result) => {
+            console.log(result);
+        },
+        (error) => {
+            console.log(error);
+        }
+    )
 }
 
 export default setHistory;
