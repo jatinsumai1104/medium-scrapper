@@ -2,4 +2,4 @@
 Scrap Medium Articles using tags.
 
 ## Demo
-[Medium Scrapper Home](https://medium-scrapper-jatin.herokuapp.com/)
+<a href="https://medium-scrapper-jatin.herokuapp.com/" target="_blank">Medium Scrapper Home</a>
