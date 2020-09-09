@@ -14,7 +14,7 @@ const Navbar = (props) => {
     }, [location.pathname]);
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light" style={{backgroundColor: '#57a846'}}>
+        <nav className="navbar navbar-expand-lg navbar-light" style={{backgroundColor: '#e3f2fd'}}>
             <div className="container">
                 <a className="navbar-brand" href="/">Medium Scrapper</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
